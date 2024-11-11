@@ -3,6 +3,7 @@ from django.forms import model_to_dict
 from django.shortcuts import render
 from django.template.defaultfilters import title
 from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,6 +15,10 @@ from .serializers import MovieSerializer
 #     queryset = Movie.objects.all()
 #     serializer_class = MovieSerializer
 
+
+class MovieAPIList(generics, ListCreateAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
 
 class MovieAPIView(APIView):
     def get(self, request):
