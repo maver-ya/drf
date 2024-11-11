@@ -21,5 +21,6 @@ from movie.views import MovieAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/movielist', MovieAPIView.as_view())
+    path('api/v1/movielist', MovieAPIView.as_view()),
+    path('api/v1/movielsit/<int:pk', MovieAPIView.as_view())
 ]

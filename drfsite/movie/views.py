@@ -23,14 +23,29 @@ class MovieAPIView(APIView):
     def post(self, request):
         serializer = MovieSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        post_new = Movie.objects.create(
-            title=request.date['title'],
-            description=request.date['description'],
-            release_date=request.date['release_date'],
-            duration=request.date['duration'],
-            rating=request.date['rating'],
-            cat_id=request.date['cat_id']
+        return Response({'post': serializer.data})
 
-        )
-        return Response({'post': MovieSerializer(post_new).data})
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({'error': "Methon PUT not allowed"})
+        try:
+            instance = Movie.objects.get(pk=pk)
+        except:
+            return Response({'error': "Methon PUT not allowed"})
+
+        serializer = MovieSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"post": serializer.data})
+
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({'error': "Method DELETE not allowed"})
+
+        Movie.objects.filter(pk=pk).delete()
+
+        return Response({"post": "delete post" + str(pk)})
