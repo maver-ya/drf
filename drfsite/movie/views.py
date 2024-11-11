@@ -1,3 +1,4 @@
+from django.core.serializers import serialize
 from django.forms import model_to_dict
 from django.shortcuts import render
 from django.template.defaultfilters import title
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 from .models import Movie
 from .serializers import MovieSerializer
 
+
 # class MovieAPIView(generics.ListAPIView):
 #     queryset = Movie.objects.all()
 #     serializer_class = MovieSerializer
@@ -15,10 +17,13 @@ from .serializers import MovieSerializer
 
 class MovieAPIView(APIView):
     def get(self, request):
-        lst = Movie.objects.all().values()
-        return Response({'post': list(lst)})
+        m = Movie.objects.all()
+        return Response({'post': MovieSerializer(m, many=True).data})
 
     def post(self, request):
+        serializer = MovieSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         post_new = Movie.objects.create(
             title=request.date['title'],
             description=request.date['description'],
@@ -28,4 +33,4 @@ class MovieAPIView(APIView):
             cat_id=request.date['cat_id']
 
         )
-        return Response({'post': model_to_dict(post_new)})
+        return Response({'post': MovieSerializer(post_new).data})
